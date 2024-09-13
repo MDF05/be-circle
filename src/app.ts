@@ -1,10 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
-import createError, { CustomError } from "./utils/create-error";
+import createError, { CustomError } from "./v1/utils/create-error";
 import { PrismaClient } from "@prisma/client";
+
 import RouterV1 from "./version/v1";
+import RouterV2 from "./version/v2";
 
 import dotenv from "dotenv"
-import RouterV2 from "./version/v2";
 dotenv.config()
 
 const app = express()

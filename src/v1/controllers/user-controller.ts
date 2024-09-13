@@ -1,6 +1,6 @@
 import { User as UserTypes } from "@prisma/client";
-import User from "../../service/user-service";
-import createError from "../../utils/create-error";
+import User from "../../v1/service/user-service";
+import createError from "../../v1/utils/create-error";
 import { NextFunction, Request, Response } from "express";
 
 class UserController {
