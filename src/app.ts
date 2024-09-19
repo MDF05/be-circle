@@ -21,7 +21,7 @@ app.use("/api/v1", RouterV1)
 app.use("/api/v2", RouterV2)
 
 
-app.use("/", (req: Request, res: Response, next: NextFunction) => next(createError(404)))
+app.use("/", (req: Request, res: Response, next: NextFunction) => next(createError("PAGE NOT FOUND", 404)))
 app.use(errorResponse)
 
 

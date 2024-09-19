@@ -9,10 +9,10 @@ import swaggerDocument from "../../swagger/swagger-output.json"
 
 export const RouterV1 = Router()
 
-// RouterV1.use('/', AuthRoute)
+RouterV1.use('/', AuthRoute)
 RouterV1.use('/user', Authenticate, UserRouter)
-// RouterV1.use('/post', Authenticate, PostRouter)
-// RouterV1.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
+RouterV1.use('/post', Authenticate, PostRouter)
+RouterV1.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 
 
 

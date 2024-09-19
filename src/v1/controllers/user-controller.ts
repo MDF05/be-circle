@@ -14,33 +14,33 @@ class UserController {
 
             succesResponse(res, "data received", 200, user)
         } catch (err: unknown) {
-            if (err instanceof Error) next(createError(401))
-            else next(createError(520))
+            if (err instanceof Error) next(createError(err.message, 401))
+            else next(createError("unknown error", 401))
         }
     }
 
-    // async getMany(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const user = await User.findMany();
-    //         succesResponse(res, "data received", 200, user)
+    async getMany(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = await User.findMany();
+            succesResponse(res, "data received", 200, user)
 
-    //     } catch (err: unknown) {
-    //         if (err instanceof Error) next(createError(err.message, 401))
-    //         else next(createError("unknown error", 520))
-    //     }
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 401))
+            else next(createError("unknown error", 401))
+        }
 
-    // }
+    }
 
-    // async post(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const user = await User.create(req.body);
+    async post(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = await User.create(req.body);
 
-    //         succesResponse(res, "data received", 201, user)
-    //     } catch (err: unknown) {
-    //         if (err instanceof Error) next(createError(err.message, 400))
-    //         else next(createError("unknown error", 520))
-    //     }
-    // }
+            succesResponse(res, "data received", 201, user)
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 400))
+            else next(createError("unknown error", 400))
+        }
+    }
 
 
 }
