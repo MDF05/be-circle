@@ -8,7 +8,7 @@ export default function Authenticate(req: Request, res: Response, next: NextFunc
     try {
         let token = req.header("Authorization");
         const startWith = /Bearer\ /.test(token as string)
-        if (!token || !startWith) return next(createError(401));
+        if (!token || !startWith) return next(createError("unauthorized", 401));
 
         token = token.replace("Bearer ", "")
         const verify = jwebtoken.verify(token, process.env.JWTPASSWORD as string)
@@ -18,8 +18,8 @@ export default function Authenticate(req: Request, res: Response, next: NextFunc
 
         next()
     } catch (err: unknown) {
-        if (err instanceof Error) next(createError(401));
-        // else next(createError("unknown error", 520));
+        if (err instanceof Error) next(createError(err.message, 401));
+        else next(createError("unknown error", 520));
 
     }
 }
