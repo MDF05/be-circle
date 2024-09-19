@@ -1,7 +1,0 @@
-
-# ! get many user
-get  http://localhost:3000/api/v1/user
-
-
-###
-get http://localhost:3000/api/v2/user

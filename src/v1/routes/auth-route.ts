@@ -1,10 +1,11 @@
 import { Router } from "express";
-import UserController from "../controllers/user-controller"
+import AuthController from "../controllers/auth-controller";
 
 const AuthRoute = Router()
-
-AuthRoute.post('/register', UserController.post)
-AuthRoute.post('/login', UserController.get)
+AuthRoute.post('/register', AuthController.register)
+AuthRoute.post('/login', AuthController.login)
+AuthRoute.get("/google", AuthController.google)
+AuthRoute.get("/google/callback", AuthController.googleCallback)
 
 
 

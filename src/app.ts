@@ -1,16 +1,14 @@
 import express, { NextFunction, Request, Response } from "express";
-import createError, { CustomError } from "./v1/utils/create-error";
+import createError from "./v1/utils/create-error";
 import { PrismaClient } from "@prisma/client";
 
 import RouterV1 from "./version/v1";
 import RouterV2 from "./version/v2";
+import errorResponse from "./v1/utils/error-response";
 
-import dotenv from "dotenv"
-dotenv.config()
 
 const app = express()
-const port = process.env.PORT || 6000
-const version = process.env.version
+const port = process.env.PORT || 3000
 
 const Prisma = new PrismaClient()
 
@@ -23,30 +21,8 @@ app.use("/api/v1", RouterV1)
 app.use("/api/v2", RouterV2)
 
 
-app.use("/", (req: Request, res: Response, next: NextFunction) => {
-    next(createError("PAGE NOT FOUND", 404))
-})
-
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
-    const message = err.message
-    const stack = err.stack
-    const name = err.name
-    const status = err.status
-    const succes = err.succes
-
-    return res.json({
-        author: "MUHAMMAD DAVA FAHREZA",
-        aplication: "circle",
-        version: version,
-        succes,
-        data: {
-            name,
-            status,
-            message,
-            stack,
-        }
-    }).status(status)
-})
+app.use("/", (req: Request, res: Response, next: NextFunction) => next(createError(404)))
+app.use(errorResponse)
 
 
 app.listen(port, async () => {

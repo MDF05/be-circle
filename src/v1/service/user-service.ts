@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 
 class User {
-
     async find(id: string): Promise<UserTypes> {
         const user = await prisma.user.findUnique({ where: { id } })
         if (!user) {
@@ -22,6 +21,8 @@ class User {
         const user = await prisma.user.create({ data })
         return user
     }
+
+
 
 }
 

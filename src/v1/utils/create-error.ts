@@ -2,7 +2,7 @@ export class CustomError extends Error {
     status: number
     succes: boolean
 
-    constructor(message: string, status: number) {
+    constructor(status: number, message?: string,) {
         super(message);
         this.status = status;
         this.succes = false
@@ -10,6 +10,6 @@ export class CustomError extends Error {
 }
 
 
-export default function createError(message: string, status: number): CustomError {
-    return new CustomError(message, status);
+export default function createError(status: number, message?: string,): CustomError {
+    return new CustomError(status, message);
 }
