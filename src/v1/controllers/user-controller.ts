@@ -6,6 +6,9 @@ import succesResponse from "../utils/succes-response";
 
 class UserController {
     async get(req: Request, res: Response, next: NextFunction) {
+        /* #swagger.security = [{
+            "bearerAuth": []
+        }] */
         try {
             const { id } = req.body
             if (!id) throw new Error("id is required")

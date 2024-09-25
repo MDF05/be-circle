@@ -17,46 +17,48 @@ enum UserRole {
 
 model User {
   id                String   @id @default(uuid())
-  fullName          String
   email             String   @unique
   password          String
   socialConnectiion Boolean  @default(false)
   role              UserRole @default(USER)
 
-  createdAt DateTime  @default(now())
-  updateAt  DateTime  @updatedAt
-  post      Post[]
-  Profile   Profile[]
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  Thread    Thread?  @relation(fields: [threadId], references: [id])
+  threadId  String?
+  profile   Profile?
 
   @@map("user")
 }
 
 model Profile {
-  id             String  @id @default(uuid())
-  name           String
-  username       String
-  bio            String
-  cover          String?
-  profilePicture String?
-  UserId         String
-  user           User    @relation(fields: [UserId], references: [id])
+  id       String   @id @default(uuid())
+  username String
+  fullName String
+  bio      String?
+  cover    String?
+  image    String?  @default("http://localhost:3000/assets/avatar.png")
+  userId   String   @unique
+  user     User     @relation(fields: [userId], references: [id])
+  thread   Thread[]
+
+  @@map("profile")
 }
 
-model Post {
-  id      String  @id @default(uuid())
-  content String
-  media   String?
-  like    Int?
-  User    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+model Thread {
+  id        String  @id @default(uuid())
+  text      String
+  image     String?
+  profileId String
+  threadId  String?
+  like      User[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  predecessorId String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  replies Post[]  @relation(name: "PostToReplies")
-  parent  Post?   @relation(name: "PostToReplies", references: [id], fields: [postId])
-  postId  String? @unique
+  replies Thread[] @relation(name: "PostToReplies")
+  profile Profile? @relation(fields: [profileId], references: [id])
+  reply   Thread?  @relation(name: "PostToReplies", fields: [threadId], references: [id])
 
-  @@map("post")
+  @@map("thread")
 }

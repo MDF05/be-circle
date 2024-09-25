@@ -1,35 +1,55 @@
 import { User as UserTypes, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { loginDTO, UserLogin } from "../DTO/login-dto";
+import { loginDTO, UserLogin, UserToken } from "../DTO/login-dto";
 import jwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
 
+interface UserTypesExtends extends UserTypes {
+    fullName: string
+}
+
 
 const prisma = new PrismaClient();
 
 class AuthService {
-    async register(data: UserTypes): Promise<UserTypes> {
-        const { email, password } = data;
+    async register(data: UserTypesExtends): Promise<UserTypes> {
+        const { fullName, ...other } = data;
         const salt = 10;
-        const hashPassword = await bcrypt.hash(password, salt);
+        const hashPassword = await bcrypt.hash(other.password, salt);
 
-        const UniqueEmail = await prisma.user.findUnique({ where: { email } });
+        const UniqueEmail = await prisma.user.findUnique({ where: { email: other.email } });
         if (UniqueEmail) throw new Error("email has already been registered");
 
-        return await prisma.user.create({
+        const user = await prisma.user.create({
             data: {
-                ...data,
+                ...other,
                 password: hashPassword,
             },
         });
+
+        const profile = await prisma.profile.create({ data: { userId: user.id, username: fullName, fullName: fullName } })
+        return user
     }
 
-    async login(data: loginDTO): Promise<UserLogin> {
+    async login(data: loginDTO): Promise<UserToken> {
         const { email, password } = data;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({
+            where: { email }, include: {
+                profile: {
+                    select: {
+                        id: true,
+                        image: true,
+                        username: true,
+                        fullName: true,
+                    }
+                }
+            }
+        });
+
+
         if (!user) throw new Error(`User not found`);
 
         const match = await bcrypt.compare(password, user.password);
@@ -40,6 +60,12 @@ class AuthService {
         const token = jwebtoken.sign(otherUser, process.env.JWTPASSWORD as string);
 
         return { user: otherUser, token };
+    }
+
+
+    async validateToken(token: string): Promise<UserTypes> {
+        const decoded = jwebtoken.verify(token, process.env.JWTPASSWORD as string);
+        return decoded as UserTypes
     }
 }
 

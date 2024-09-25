@@ -5,17 +5,30 @@ import succesResponse from "../utils/succes-response";
 import dotenv from "dotenv"
 import { registerSchema } from "../schema/register-schema";
 import { loginSchema } from "../schema/login-schema";
+import { tokenSchema } from "../schema/validate-token";
 
 dotenv.config()
 
 class AuthController {
 
     async register(req: Request, res: Response, next: NextFunction) {
+        /*      #swagger.requestBody = {
+              required : true,
+              content : {
+                  "application/json" : {
+                      schema : {
+                         $ref : "#/components/schemas/registerDTO"
+                      }
+                  }
+              }
+          }
+        */
+
+
         try {
             const result = await registerSchema.safeParseAsync(req.body)
             if (!result.success) throw new Error(result.error?.issues[0].message)
-
-            const user = await AuthService.register(req.body);
+            const { password, ...user } = await AuthService.register(req.body);
             succesResponse(res, "user has been registered successfully", 201, user)
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401));
@@ -23,7 +36,44 @@ class AuthController {
         }
     }
 
+    async validateToken(req: Request, res: Response, next: NextFunction) {
+        /*      #swagger.requestBody = {
+              required : true,
+              content : {
+                  "application/json" : {
+                      schema : {
+                         $ref : "#/components/schemas/registerDTO"
+                      }
+                  }
+              }
+          }
+        */
+
+
+        try {
+            const result = await tokenSchema.safeParseAsync(req.body)
+            if (!result.success) throw new Error(result.error?.issues[0].message)
+
+            const { password, ...user } = await AuthService.validateToken(req.body.token);
+            succesResponse(res, "token is validated", 201, user)
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 401));
+            else next(createError("unknown error", 520))
+        }
+    }
+
     async login(req: Request, res: Response, next: NextFunction) {
+        /*  #swagger.requestBody = {
+          required : true,
+          content : {
+              "application/json" : {
+                  schema : {
+                     $ref : "#/components/schemas/loginDTO"
+                  }
+              }
+          }
+      }
+      */
         try {
             const user = await AuthService.login(req.body);
             const result = await loginSchema.safeParseAsync(req.body)

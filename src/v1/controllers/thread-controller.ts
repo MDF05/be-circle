@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import postService from "../service/post-service";
+import postService from "../service/thread-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
 
-class PostController {
-
+class ThreadController {
     async post(req: Request, res: Response, next: NextFunction) {
         try {
-            const post = await postService.create(req.body);
+            const image = req.file?.filename
+            console.log(req.body)
+            const post = await postService.create(req.body, image);
             succesResponse(res, "post created successfully", 201, post)
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401))
@@ -83,4 +84,4 @@ class PostController {
 }
 
 
-export default new PostController();
+export default new ThreadController();

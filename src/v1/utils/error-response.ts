@@ -10,7 +10,7 @@ export default function errorResponse(err: CustomError, req: Request, res: Respo
     const status = err.status
     const succes = err.succes
 
-    return res.json({
+    return res.status(status).json({
         succes,
         author: "MUHAMMAD DAVA FAHREZA",
         aplication: "circle",
@@ -32,5 +32,5 @@ export default function errorResponse(err: CustomError, req: Request, res: Respo
             }]
 
 
-    }).status(status)
+    })
 }
