@@ -2,16 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import postService from "../service/thread-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
+import { User } from '@prisma/client';
+import RequestExtUser from "../types/request-extends-user";
 
 class ThreadController {
-    async post(req: Request, res: Response, next: NextFunction) {
+    async post(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
             const image = req.file?.filename
-            console.log(req.body)
-            const post = await postService.create(req.body, image);
+            const body = req.body
+            body.profileId = req.user.id
+            const post = await postService.create(body, image);
             succesResponse(res, "post created successfully", 201, post)
         } catch (err: unknown) {
-            if (err instanceof Error) next(createError(err.message, 401))
+            if (err instanceof Error) next(createError(err.message, 402))
             else next(createError("unknown error", 520))
         }
     }
