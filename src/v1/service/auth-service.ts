@@ -3,12 +3,10 @@ import bcrypt from "bcrypt";
 import { loginDTO, UserLogin, UserToken } from "../DTO/login-dto";
 import jwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
+import UserTypesExtends from "../types/user-ext-fullname";
 dotenv.config();
 
 
-interface UserTypesExtends extends UserTypes {
-    fullName: string
-}
 
 
 const prisma = new PrismaClient();
@@ -39,11 +37,13 @@ class AuthService {
         const user = await prisma.user.findUnique({
             where: { email }, include: {
                 profile: {
-                    select: {
-                        id: true,
-                        image: true,
-                        username: true,
-                        fullName: true,
+                    include: {
+                        _count: {
+                            select: {
+                                follower: true,
+                                following: true,
+                            }
+                        }
                     }
                 }
             }

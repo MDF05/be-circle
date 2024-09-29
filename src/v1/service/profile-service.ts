@@ -5,7 +5,26 @@ const prisma = new PrismaClient()
 class profileService {
 
     async findUnique(id: string): Promise<ProfileTypes | null> {
-        const profile = await prisma.profile.findUnique({ where: { id: id } })
+        const profile = await prisma.profile.findUnique({
+            where: { id: id }, include: {
+                thread: {
+                    where: { threadId: null },
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        profile: {
+                            select: { id: true, username: true, image: true, fullName: true }
+                        },
+                        _count: {
+                            select: { like: true, replies: true }
+                        }, replies: true
+
+                    }
+                },
+                _count: {
+                    select: { follower: true, following: true }
+                }
+            }
+        })
         return profile
     }
 

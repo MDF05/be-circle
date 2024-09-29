@@ -9,12 +9,12 @@ class ThreadController {
     async post(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
             const image = req.file?.filename
-            const body = req.body
-            body.profileId = req.user.id
-            const post = await postService.create(body, image);
+            const body = { ...req.body, profileId: req?.user?.profile.id };
+            if (image) body.image = image
+            const post = await postService.create(body);
             succesResponse(res, "post created successfully", 201, post)
         } catch (err: unknown) {
-            if (err instanceof Error) next(createError(err.message, 402))
+            if (err instanceof Error) next(createError(err.message, 401))
             else next(createError("unknown error", 520))
         }
     }

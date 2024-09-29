@@ -1,7 +1,9 @@
-import jwebtoken from 'jsonwebtoken';
 import { Request } from 'express';
-import { User } from '@prisma/client';
+import UserExtProfile from './user-ext-profile';
 
 export default interface RequestExtUser extends Request {
-    user: any;
+    user?: UserExtProfile,
+    files?: any
 }
+
+

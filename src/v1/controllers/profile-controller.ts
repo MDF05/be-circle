@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import profileService from "../service/profile-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
+import RequestExtUser from "../types/request-extends-user";
 
 class ProfillerController {
-    async get(req: Request, res: Response, next: NextFunction) {
+    async get(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params
+            const id = req.user?.profile.id as string
             const profile = await profileService.findUnique(id)
             if (!profile) throw new Error("user nof found")
 
@@ -74,9 +75,12 @@ class ProfillerController {
     }
 
 
-    async updateOne(req: Request, res: Response, next: NextFunction) {
+    async updateOne(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
-            const profile = await profileService.updatePut(req.body)
+            const id = req.user?.profile.id
+            const image = `http://localhost:3000/assets/${req.files.image[0].filename}`
+            const cover = `http://localhost:3000/assets/${req.files.cover[0].filename}`
+            const profile = await profileService.updatePut({ ...req.body, id, cover, image })
             succesResponse(res, "data updated", 200, profile)
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401))

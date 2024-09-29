@@ -4,16 +4,20 @@ import UserRouter from "../v1/routes/user-route"
 import Authenticate from "../v1/middlewate/authentication"
 import swaggerUI from "swagger-ui-express"
 import swaggerDocument from "../../swagger/swagger-output.json"
-import Authorization from "../v1/middlewate/authorization"
 import ThreadRouter from "../v1/routes/thread-route"
+import LikeRouter from "../v1/routes/like-route"
+import ProfileRoute from './../v1/routes/profile-route';
+import { upload } from "../v1/middlewate/upload-image"
 
 
 export const RouterV1 = Router()
 
 
 RouterV1.use('/', AuthRoute)
-RouterV1.use('/user', Authenticate, Authorization("ADMIN"), UserRouter)
-RouterV1.use('/thread', Authenticate, ThreadRouter)
+RouterV1.use('/user', Authenticate, UserRouter)
+RouterV1.use('/thread', Authenticate, upload.single("image"), ThreadRouter)
+RouterV1.use("/like", Authenticate, LikeRouter)
+RouterV1.use("/profile", Authenticate, upload.fields([{ name: "image" }, { name: "cover" }]), ProfileRoute)
 RouterV1.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument, {
     explorer: true,
     swaggerOptions: {

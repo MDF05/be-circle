@@ -24,9 +24,11 @@ model User {
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
-  Thread    Thread?  @relation(fields: [threadId], references: [id])
-  threadId  String?
-  profile   Profile?
+
+  profile  Profile?
+  Thread   Thread?  @relation(fields: [threadId], references: [id])
+  threadId String?
+  like     Like[]
 
   @@map("user")
 }
@@ -35,12 +37,20 @@ model Profile {
   id       String   @id @default(uuid())
   username String
   fullName String
-  bio      String?
-  cover    String?
+  bio      String?  @default("silahkan tambahkan bio profile")
+  cover    String?  @default("http://localhost:3000/assets/cover.png")
   image    String?  @default("http://localhost:3000/assets/avatar.png")
   userId   String   @unique
   user     User     @relation(fields: [userId], references: [id])
   thread   Thread[]
+
+  followingId String?
+  following   Profile[] @relation(name: "follow")
+  followings  Profile?  @relation(name: "follow", fields: [followingId], references: [id])
+
+  followerId String?
+  follower   Profile[] @relation(name: "follower")
+  followers  Profile?  @relation(name: "follower", fields: [followerId], references: [id])
 
   @@map("profile")
 }
@@ -51,14 +61,24 @@ model Thread {
   image     String?
   profileId String
   threadId  String?
-  like      User[]
+  like      Like[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   replies Thread[] @relation(name: "PostToReplies")
   profile Profile? @relation(fields: [profileId], references: [id])
-  reply   Thread?  @relation(name: "PostToReplies", fields: [threadId], references: [id])
+  replie  Thread?  @relation(name: "PostToReplies", fields: [threadId], references: [id])
+  User    User[]
 
   @@map("thread")
+}
+
+model Like {
+  id       String @id @default(uuid())
+  userId   String
+  threadId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  thread Thread @relation(fields: [threadId], references: [id])
 }

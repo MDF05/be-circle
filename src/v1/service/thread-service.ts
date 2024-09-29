@@ -4,14 +4,13 @@ import { Thread as ThreadsTypes, PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 class ThreadService {
-    async create(data: ThreadsTypes, image?: string): Promise<ThreadsTypes> {
+    async create(data: ThreadsTypes,): Promise<ThreadsTypes> {
 
         const dataThread: ThreadsTypes = { ...data }
-        if (image) dataThread.image = image as string
-        else dataThread.image = null
         const newPost = await prisma.thread.create({ data: dataThread })
         return newPost
     }
+
 
     async findMany(): Promise<ThreadsTypes[]> {
 
@@ -35,6 +34,7 @@ class ThreadService {
         const thread = await prisma.thread.findUnique({
             where: { id: id }, include: {
                 profile: true, replies: {
+                    orderBy: { createdAt: 'desc' },
                     include: {
                         profile: true,
                         _count: {
