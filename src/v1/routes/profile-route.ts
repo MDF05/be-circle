@@ -3,11 +3,14 @@ import profileController from "../controllers/profile-controller";
 import { upload } from "../middlewate/upload-image";
 
 
-const ProfileRoute = Router()
+const ProfileRouter = Router()
 
 
-ProfileRoute.put('/', profileController.updateOne)
-ProfileRoute.get('/', profileController.get)
+ProfileRouter.put('/', profileController.updateOne)
+ProfileRouter.get('/', profileController.getMany)
+ProfileRouter.get('/:id', profileController.getById)
+ProfileRouter.get('/search/:username', profileController.searchUsername)
 
-export default ProfileRoute
+
+export default ProfileRouter
 

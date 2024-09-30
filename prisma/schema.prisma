@@ -34,25 +34,31 @@ model User {
 }
 
 model Profile {
-  id       String   @id @default(uuid())
-  username String
-  fullName String
-  bio      String?  @default("silahkan tambahkan bio profile")
-  cover    String?  @default("http://localhost:3000/assets/cover.png")
-  image    String?  @default("http://localhost:3000/assets/avatar.png")
-  userId   String   @unique
-  user     User     @relation(fields: [userId], references: [id])
-  thread   Thread[]
-
-  followingId String?
-  following   Profile[] @relation(name: "follow")
-  followings  Profile?  @relation(name: "follow", fields: [followingId], references: [id])
-
-  followerId String?
-  follower   Profile[] @relation(name: "follower")
-  followers  Profile?  @relation(name: "follower", fields: [followerId], references: [id])
+  id        String   @id @default(uuid())
+  username  String
+  fullName  String
+  bio       String?  @default("silahkan tambahkan bio profile")
+  cover     String?  @default("http://localhost:3000/assets/cover.png")
+  image     String?  @default("http://localhost:3000/assets/avatar.png")
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  thread    Thread[]
+  follower  Follow[] @relation(name: "follower")
+  following Follow[] @relation(name: "following")
 
   @@map("profile")
+}
+
+model Follow {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+
+  follower  Profile @relation(name: "follower", fields: [followerId], references: [id])
+  following Profile @relation(name: "following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+  @@map("follow")
 }
 
 model Thread {

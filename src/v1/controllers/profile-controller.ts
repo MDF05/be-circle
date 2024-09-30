@@ -17,10 +17,23 @@ class ProfillerController {
             else next(createError("unknown error", 520))
         }
     }
-
-    async getMany(req: Request, res: Response, next: NextFunction) {
+    async getById(req: Request, res: Response, next: NextFunction) {
         try {
-            const profile = await profileService.findMany()
+            const id = req.params.id
+            const profile = await profileService.findUnique(id)
+            if (!profile) throw new Error("user nof found")
+
+            succesResponse(res, "data successfully retrieved", 200, profile)
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 401))
+            else next(createError("unknown error", 520))
+        }
+    }
+
+    async getMany(req: RequestExtUser, res: Response, next: NextFunction) {
+        try {
+            const profileId = req.user?.profile.id as string
+            const profile = await profileService.findMany(profileId)
 
             succesResponse(res, "data successfully retrieved", 200, profile)
         } catch (err: unknown) {
@@ -78,12 +91,15 @@ class ProfillerController {
     async updateOne(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
             const id = req.user?.profile.id
-            const image = `http://localhost:3000/assets/${req.files.image[0].filename}`
-            const cover = `http://localhost:3000/assets/${req.files.cover[0].filename}`
-            const profile = await profileService.updatePut({ ...req.body, id, cover, image })
+
+
+            const data = { ...req.body, id }
+            if (req.files.image) data.image = `http://localhost:3000/assets/${req.files.image[0].filename}`
+            if (req.files.cover) data.cover = `http://localhost:3000/assets/${req.files.cover[0].filename}`
+            const profile = await profileService.updatePut(data)
             succesResponse(res, "data updated", 200, profile)
         } catch (err: unknown) {
-            if (err instanceof Error) next(createError(err.message, 401))
+            if (err instanceof Error) next(createError(err.message, 400))
             else next(createError("unknown error", 520))
         }
     }
@@ -92,6 +108,17 @@ class ProfillerController {
         try {
             const profiles = await profileService.updateMany(req.body)
             succesResponse(res, "data updated", 200, profiles)
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 401))
+            else next(createError("unknown error", 520))
+        }
+    }
+
+    async searchUsername(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { username } = req.params
+            const profiles = await profileService.searchByUsername(username as string)
+            succesResponse(res, "data returned", 200, profiles)
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401))
             else next(createError("unknown error", 520))

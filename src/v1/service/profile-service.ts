@@ -29,8 +29,15 @@ class profileService {
     }
 
 
-    async findMany(): Promise<ProfileTypes[]> {
-        const profile = await prisma.profile.findMany()
+
+    async findMany(id: string): Promise<ProfileTypes[]> {
+        const profile = await prisma.profile.findMany({
+            where: {
+                id: {
+                    notIn: [id]
+                }
+            }
+        })
         return profile
     }
 
@@ -79,6 +86,19 @@ class profileService {
             where: { id: data.id },
             data: { ...data, ...dataUpdate },
         });
+        return profile;
+    }
+
+
+    async searchByUsername(username: string): Promise<ProfileTypes[]> {
+        const profile = await prisma.profile.findMany({
+            where: {
+                username: {
+                    contains: username,
+                    mode: 'insensitive'
+                }
+            }
+        })
         return profile;
     }
 
