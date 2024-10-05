@@ -5,7 +5,7 @@ import express, { NextFunction, Request, Response } from "express";
 
 // import RouterV1 from "./version/v1";
 // import RouterV2 from "./version/v2";
-// import errorResponse from "./v1/utils/error-response";
+import errorResponse from "./v1/utils/error-response";
 import cors from 'cors';
 
 
@@ -31,8 +31,8 @@ app.get("/", (req, res) => {
 // app.use("/api/v2", RouterV2)
 
 
-// app.use("/", (req: Request, res: Response, next: NextFunction) => next(createError("PAGE NOT FOUND", 404)))
-// app.use(errorResponse)
+app.use("/", (req: Request, res: Response, next: NextFunction) => next(createError("PAGE NOT FOUND", 404)))
+app.use(errorResponse)
 
 
 app.listen(port, async () => {
