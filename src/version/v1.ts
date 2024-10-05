@@ -1,5 +1,5 @@
 import { Router } from "express"
-// import AuthRoute from "../v1/routes/auth-route"
+import AuthRoute from "../v1/routes/auth-route"
 // import UserRouter from "../v1/routes/user-route"
 // import Authenticate from "../v1/middlewate/authentication"
 import swaggerUI from "swagger-ui-express"
@@ -14,7 +14,7 @@ import swaggerDocument from "../../swagger/swagger-output.json"
 export const RouterV1 = Router()
 
 
-// RouterV1.use('/', AuthRoute)
+RouterV1.use('/', AuthRoute)
 // RouterV1.use('/user', Authenticate, UserRouter)
 // RouterV1.use('/thread', Authenticate, upload.single("image"), ThreadRouter)
 // RouterV1.use("/like", Authenticate, LikeRouter)
