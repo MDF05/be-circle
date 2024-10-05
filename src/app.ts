@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 // import createError from "./v1/utils/create-error";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 
 
 // import RouterV1 from "./version/v1";
 // import RouterV2 from "./version/v2";
 // import errorResponse from "./v1/utils/error-response";
-// import cors from 'cors';
+import cors from 'cors';
 
 
 
@@ -14,13 +14,13 @@ import { PrismaClient } from "@prisma/client";
 
 const app = express()
 const port = process.env.PORT || 3000
-const Prisma = new PrismaClient()
+// const Prisma = new PrismaClient()
 
 
 
-// app.use(cors())
-// app.use(express.json())
-// app.use(express.urlencoded({ extended: true }))
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 // app.use("/assets", express.static("./src/image"))
 
 
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 
 
 app.listen(port, async () => {
-    await Prisma.$connect()
+    // await Prisma.$connect()
     console.log("berhasil connect ke database")
     console.log(`listening on port ${port}`)
 })
