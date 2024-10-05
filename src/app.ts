@@ -24,7 +24,9 @@ const port = process.env.PORT || 3000
 // app.use("/assets", express.static("./src/image"))
 
 
-
+app.get("/", (req, res) => {
+    res.json({ message: "Hello, World!" })
+})
 app.use("/api/v1", RouterV1)
 // app.use("/api/v2", RouterV2)
 
