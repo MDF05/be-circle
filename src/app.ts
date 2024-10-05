@@ -25,7 +25,7 @@ app.use("/assets", express.static("./src/image"))
 
 
 app.get("/", (req, res) => {
-    res.json({ message: "Hello, World!" })
+    res.json({ message: "Hello, Worlda!" })
 })
 // app.use("/api/v1", RouterV1)
 // app.use("/api/v2", RouterV2)
