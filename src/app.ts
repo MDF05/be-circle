@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, Express } from "express";
 import createError from "./v1/utils/create-error";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 
 
 // import RouterV1 from "./version/v1";
@@ -14,7 +14,7 @@ import cors from 'cors';
 
 const app: Express = express()
 const port = process.env.PORT || 3000
-const Prisma = new PrismaClient()
+// const Prisma = new PrismaClient()
 
 
 
@@ -36,7 +36,7 @@ app.use(errorResponse)
 
 
 app.listen(port, async () => {
-    await Prisma.$connect()
+    // await Prisma.$connect()
     console.log("berhasil connect ke database")
     console.log(`listening on port ${port}`)
 })
