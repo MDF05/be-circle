@@ -13,6 +13,7 @@ export default function Authenticate(req: RequestExtUser, res: Response, next: N
             "bearerAuth": []
         }] */
 
+
         let token = req.header("Authorization");
 
         const startWith = /Bearer\ /.test(token as string)

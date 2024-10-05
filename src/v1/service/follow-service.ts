@@ -10,7 +10,8 @@ class FollowService {
         return follow
     }
     async find(followerId: string, followingId: string): Promise<Follow> {
-        const follow = await prisma.follow.findFirstOrThrow({ where: { followerId, followingId } })
+        const follow = await prisma.follow.findFirst({ where: { followerId, followingId } })
+        if (!follow) throw new Error("no follow found")
 
         return follow
     }
@@ -20,6 +21,16 @@ class FollowService {
         return follow
     }
 
+
+    async findProfileFollowing(profileId: string) {
+        const followers = await prisma.follow.findMany({ where: { followingId: profileId }, include: { follower: true } })
+        return followers
+    }
+
+    async findProfileFollower(profileId: string) {
+        const followers = await prisma.follow.findMany({ where: { followerId: profileId }, include: { following: true } })
+        return followers
+    }
 
 
 

@@ -87,4 +87,6 @@ model Like {
 
   user   User   @relation(fields: [userId], references: [id])
   thread Thread @relation(fields: [threadId], references: [id])
+
+  @@unique([userId, threadId])
 }

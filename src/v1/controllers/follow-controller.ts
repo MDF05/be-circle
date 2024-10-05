@@ -15,12 +15,10 @@ class FollowController {
             const follow = await followService.create(followerId, followingId)
             succesResponse(res, "follow has been created", 200, follow)
         } catch (err) {
-            if (err instanceof Error) next(createError(err.message, 400))
+            if (err instanceof Error) next(createError(err.message, 404))
             else next(createError("unknow error", 500))
         }
     }
-
-
 
 
     async get(req: RequestExtUser, res: Response, next: NextFunction) {
@@ -30,7 +28,7 @@ class FollowController {
             const follow = await followService.find(followerId, followingId)
             succesResponse(res, "follow found", 200, follow)
         } catch (err) {
-            if (err instanceof Error) next(createError(err.message, 400))
+            if (err instanceof Error) next(createError(err.message, 404))
             else next(createError("unknow error", 500))
         }
     }
@@ -39,6 +37,30 @@ class FollowController {
         try {
             const followId = req.params.followId
             const follow = await followService.delete(followId)
+            succesResponse(res, "follow found", 200, follow)
+        } catch (err) {
+            if (err instanceof Error) next(createError(err.message, 400))
+            else next(createError("unknow error", 500))
+        }
+    }
+
+
+    async getDataFollowing(req: RequestExtUser, res: Response, next: NextFunction) {
+        try {
+            const profileId = req.params.profileId
+            const follow = await followService.findProfileFollowing(profileId)
+            succesResponse(res, "follow found", 200, follow)
+        } catch (err) {
+            if (err instanceof Error) next(createError(err.message, 400))
+            else next(createError("unknow error", 500))
+        }
+    }
+
+
+    async getDataFollower(req: RequestExtUser, res: Response, next: NextFunction) {
+        try {
+            const profileId = req.params.profileId
+            const follow = await followService.findProfileFollower(profileId)
             succesResponse(res, "follow found", 200, follow)
         } catch (err) {
             if (err instanceof Error) next(createError(err.message, 400))

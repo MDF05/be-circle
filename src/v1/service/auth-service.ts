@@ -57,7 +57,7 @@ class AuthService {
 
         const { password: Password, ...otherUser } = user;
 
-        const token = jwebtoken.sign(otherUser, process.env.JWTPASSWORD as string);
+        const token = jwebtoken.sign(otherUser, process.env.JWTPASSWORD as string, { expiresIn: "1d" });
 
         return { user: otherUser, token };
     }
@@ -67,6 +67,10 @@ class AuthService {
         const decoded = jwebtoken.verify(token, process.env.JWTPASSWORD as string);
         return decoded as UserTypes
     }
+
+
+
+
 }
 
 export default new AuthService();

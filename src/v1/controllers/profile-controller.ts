@@ -3,6 +3,7 @@ import profileService from "../service/profile-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
 import RequestExtUser from "../types/request-extends-user";
+import { configTypes } from "../service/types/profile-types";
 
 class ProfillerController {
     async get(req: RequestExtUser, res: Response, next: NextFunction) {
@@ -33,7 +34,9 @@ class ProfillerController {
     async getMany(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
             const profileId = req.user?.profile.id as string
-            const profile = await profileService.findMany(profileId)
+            const limit = req.query.limit as string
+
+            const profile = await profileService.findMany(profileId, limit)
 
             succesResponse(res, "data successfully retrieved", 200, profile)
         } catch (err: unknown) {
@@ -99,7 +102,7 @@ class ProfillerController {
             const profile = await profileService.updatePut(data)
             succesResponse(res, "data updated", 200, profile)
         } catch (err: unknown) {
-            if (err instanceof Error) next(createError(err.message, 400))
+            if (err instanceof Error) next(createError(err.message, 401))
             else next(createError("unknown error", 520))
         }
     }
@@ -114,16 +117,18 @@ class ProfillerController {
         }
     }
 
-    async searchUsername(req: Request, res: Response, next: NextFunction) {
+    async searchUsername(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
             const { username } = req.params
-            const profiles = await profileService.searchByUsername(username as string)
+            const profileId = req.user?.profile.id as string
+            const profiles = await profileService.searchByUsername(username, profileId)
             succesResponse(res, "data returned", 200, profiles)
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401))
             else next(createError("unknown error", 520))
         }
     }
+
 
 }
 

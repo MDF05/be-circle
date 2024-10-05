@@ -6,6 +6,8 @@ import dotenv from "dotenv"
 import { registerSchema } from "../schema/register-schema";
 import { loginSchema } from "../schema/login-schema";
 import { tokenSchema } from "../schema/validate-token";
+import nodemailer from "nodemailer"
+import Mail from "nodemailer/lib/mailer";
 
 dotenv.config()
 
@@ -80,6 +82,38 @@ class AuthController {
             if (!result.success) throw new Error(result.error?.issues[0].message)
 
             succesResponse(res, "user succesfully login", 201, user)
+        } catch (err: unknown) {
+            if (err instanceof Error) next(createError(err.message, 401));
+            else next(createError("unknown error", 520))
+        }
+    }
+
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const mailTransporter = nodemailer.createTransport({
+                service: "gmail",
+                // host: 'smtp.gmail.com',
+                // port: 587,
+                // secure: false,
+                auth: {
+                    user: 'mdavafahreza05@gmail.com',
+                    pass: 'ga dapat anjing bajing google'
+                }
+
+            })
+
+            const mailOptions: Mail.Options = {
+                from: 'noreply',
+                to: 'dava.kspp02@gmail.com',
+                subject: "code your tiket password",
+                text: `code: text`,
+            }
+
+            mailTransporter.sendMail(mailOptions, (err, info) => {
+                if (err) throw new Error(err.message)
+                else return res.json({ success: "yes" })
+            })
+
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401));
             else next(createError("unknown error", 520))

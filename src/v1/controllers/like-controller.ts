@@ -36,7 +36,7 @@ class likeController {
             const like = await likeService.delete(likeId)
             succesResponse(res, "like found", 200, like)
         } catch (err) {
-            if (err instanceof Error) next(createError(err.message, 403))
+            if (err instanceof Error) next(createError(err.message, 404))
             else next(createError("unknown error", 501))
         }
     }

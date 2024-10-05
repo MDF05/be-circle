@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import postService from "../service/thread-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
-import { User } from '@prisma/client';
 import RequestExtUser from "../types/request-extends-user";
 
 class ThreadController {

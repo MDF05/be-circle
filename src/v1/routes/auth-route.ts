@@ -9,6 +9,8 @@ AuthRoute.post('/register', AuthController.register)
 AuthRoute.post('/login', AuthController.login)
 AuthRoute.get("/google", AuthController.google)
 AuthRoute.get("/google/callback", AuthController.googleCallback)
+AuthRoute.get("/forgot-password", AuthController.forgotPassword)
+
 
 
 

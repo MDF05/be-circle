@@ -1,4 +1,5 @@
 import { PrismaClient, Profile as ProfileTypes } from "@prisma/client";
+import { configTypes } from "./types/profile-types";
 
 const prisma = new PrismaClient()
 
@@ -30,13 +31,17 @@ class profileService {
 
 
 
-    async findMany(id: string): Promise<ProfileTypes[]> {
+    async findMany(id: string, limit: string): Promise<ProfileTypes[]> {
+        const configs = {} as configTypes
+        if (limit) configs.take = 3
+
         const profile = await prisma.profile.findMany({
             where: {
                 id: {
                     notIn: [id]
                 }
-            }
+            },
+            ...configs
         })
         return profile
     }
@@ -90,17 +95,22 @@ class profileService {
     }
 
 
-    async searchByUsername(username: string): Promise<ProfileTypes[]> {
+    async searchByUsername(username: string, profileId: string): Promise<ProfileTypes[]> {
         const profile = await prisma.profile.findMany({
             where: {
                 username: {
                     contains: username,
                     mode: 'insensitive'
+                },
+                id: {
+                    notIn: [profileId]
                 }
             }
         })
         return profile;
     }
+
+
 
 }
 
