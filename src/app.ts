@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 // import { PrismaClient } from "@prisma/client";
 
 
-import RouterV1 from "./version/v1";
+// import RouterV1 from "./version/v1";
 // import RouterV2 from "./version/v2";
 // import errorResponse from "./v1/utils/error-response";
 // import cors from 'cors';
@@ -27,7 +27,7 @@ const port = process.env.PORT || 3000
 app.get("/", (req, res) => {
     res.json({ message: "Hello, World!" })
 })
-app.use("/api/v1", RouterV1)
+// app.use("/api/v1", RouterV1)
 // app.use("/api/v2", RouterV2)
 
 
