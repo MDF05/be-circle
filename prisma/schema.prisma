@@ -38,8 +38,8 @@ model Profile {
   fullName  String
   username  String
   bio       String?  @default("silahkan tambahkan bio profile")
-  cover     String?  @default("http://localhost:3000/assets/cover.png")
-  image     String?  @default("http://localhost:3000/assets/avatar.png")
+  cover     String?  @default("https://be-circle-one.vercel.app/api/v1cover.png")
+  image     String?  @default("https://be-circle-one.vercel.app/api/v1avatar.png")
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   thread    Thread[]
