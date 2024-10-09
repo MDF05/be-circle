@@ -24,18 +24,23 @@ class AuthService {
             data: {
                 ...other,
                 password: hashPassword,
+                profile : {
+                    create : {
+                        fullName : fullName,
+                        username : fullName
+                    }
+                }
             },
         });
 
-        const profile = await prisma.profile.create({ data: { userId: user.id, username: fullName, fullName: fullName } })
         return user
     }
 
     async login(data: loginDTO): Promise<UserToken> {
         const { email, password } = data;
 
-        const user = await prisma.user.findUnique({
-            where: { email }, include: {
+        const user = await prisma.user.findFirst({
+            where: { OR : [{email}, {profile : {username : email}}]}, include: {
                 profile: {
                     include: {
                         _count: {
@@ -50,6 +55,7 @@ class AuthService {
         });
 
 
+        console.log(user)
         if (!user) throw new Error(`User not found`);
 
         const match = await bcrypt.compare(password, user.password);

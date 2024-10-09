@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -36,8 +35,8 @@ model User {
 
 model Profile {
   id        String   @id @default(uuid())
-  username  String
   fullName  String
+  username  String
   bio       String?  @default("silahkan tambahkan bio profile")
   cover     String?  @default("http://localhost:3000/assets/cover.png")
   image     String?  @default("http://localhost:3000/assets/avatar.png")

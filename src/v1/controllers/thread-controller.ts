@@ -7,6 +7,7 @@ import RequestExtUser from "../types/request-extends-user";
 class ThreadController {
     async post(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
+            console.log("asu")
             const image = req.file?.filename
             const body = { ...req.body, profileId: req?.user?.profile.id };
             if (image) body.image = image

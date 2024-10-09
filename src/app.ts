@@ -13,7 +13,7 @@ import cors from 'cors';
 
 
 const app: Express = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 const Prisma = new PrismaClient()
 
 
@@ -24,9 +24,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/assets", express.static("./src/image"))
 
 
-app.get("/", (req, res) => {
-    res.json({ message: "Hello, Worlda!" })
-})
+
 app.use("/api/v1", RouterV1)
 // app.use("/api/v2", RouterV2)
 
