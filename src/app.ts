@@ -7,6 +7,7 @@ import RouterV1 from "./version/v1";
 // import RouterV2 from "./version/v2";
 import errorResponse from "./v1/utils/error-response";
 import cors from 'cors';
+import path from "path";
 
 
 
@@ -21,7 +22,7 @@ const Prisma = new PrismaClient()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use("/assets", express.static("./src/image"))
+app.use("/assets", express.static(path.resolve("image")))
 
 
 
