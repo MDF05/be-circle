@@ -13,7 +13,7 @@ class profileService {
                     orderBy: { createdAt: 'desc' },
                     include: {
                         profile: {
-                            select: { id: true, username: true, image: true, fullName: true }
+                            select: { id: true, image: true, fullName: true }
                         },
                         _count: {
                             select: { like: true, replies: true }
@@ -95,11 +95,11 @@ class profileService {
     }
 
 
-    async searchByUsername(username: string, profileId: string): Promise<ProfileTypes[]> {
+    async searchByUsername(fullName: string, profileId: string): Promise<ProfileTypes[]> {
         const profile = await prisma.profile.findMany({
             where: {
-                username: {
-                    contains: username,
+                fullName: {
+                    contains: fullName,
                     mode: 'insensitive'
                 },
                 id: {
