@@ -3,16 +3,22 @@ import postService from "../service/thread-service";
 import createError from "../utils/create-error";
 import succesResponse from "../utils/succes-response";
 import RequestExtUser from "../types/request-extends-user";
+import cloudinaryService from "../service/cloudinary-service";
 
 class ThreadController {
     async post(req: RequestExtUser, res: Response, next: NextFunction) {
         try {
-            console.log("asu")
-            const image = req.file?.filename
+            // const image = req.file?.filename
+            // const body = { ...req.body, profileId: req?.user?.profile.id };
+            // if (image) body.image = `http://localhost:4000/assets/${image}`
+            
             const body = { ...req.body, profileId: req?.user?.profile.id };
-            if (image) body.image = image
+            const file = req.file as Express.Multer.File
+            if(file) body.image = (await cloudinaryService.upload(file)).url 
+            
             const post = await postService.create(body);
             succesResponse(res, "post created successfully", 201, post)
+
         } catch (err: unknown) {
             if (err instanceof Error) next(createError(err.message, 401))
             else next(createError("unknown error", 520))

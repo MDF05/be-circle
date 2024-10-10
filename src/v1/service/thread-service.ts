@@ -4,7 +4,7 @@ import { Thread as ThreadsTypes, PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 class ThreadService {
-    async create(data: ThreadsTypes,): Promise<ThreadsTypes> {
+    async create(data: ThreadsTypes): Promise<ThreadsTypes> {
 
         const dataThread: ThreadsTypes = { ...data }
         const newPost = await prisma.thread.create({ data: dataThread })

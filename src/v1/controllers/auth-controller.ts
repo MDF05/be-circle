@@ -8,7 +8,6 @@ import { loginSchema } from "../schema/login-schema";
 import { tokenSchema } from "../schema/validate-token";
 import nodemailer from "nodemailer"
 import Mail from "nodemailer/lib/mailer";
-
 dotenv.config()
 
 class AuthController {
@@ -123,7 +122,7 @@ class AuthController {
 
     async google(req: Request, res: Response, next: NextFunction) {
         try {
-            const GOOGLE_CALLBACK_URL = "http://localhost:3000/api/v1/google/callback"
+            const GOOGLE_CALLBACK_URL = "http://localhost:4000/api/v1/google/callback"
             const GOOGLE_OAUTH_URL = process.env.GOOGLE_OAUTH_URL
             const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 
@@ -161,7 +160,7 @@ class AuthController {
 
                 client_secret: GOOGLE_CLIENT_SECRET,
 
-                redirect_uri: "http://localhost:3000/api/v1/google/callback",
+                redirect_uri: "http://localhost:4000/api/v1/google/callback",
 
                 grant_type: "authorization_code",
             };

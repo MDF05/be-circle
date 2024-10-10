@@ -10,7 +10,7 @@ const doc = {
   },
   servers: [
     {
-      url: "http://localhost:3000/api/v1",
+      url: "http://localhost:4000/api/v1",
     },
     {
       url: "https://circle.vercel.app",
@@ -55,7 +55,7 @@ const doc = {
         required: ["email", "password"],
       },
     },
-    host: "localhost:3000/api/v1",
+    host: "localhost:4000/api/v1",
     securitySchemes: {
       bearerAuth: {
         type: "http",

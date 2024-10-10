@@ -97,8 +97,8 @@ class ProfillerController {
 
 
             const data = { ...req.body, id }
-            if (req.files.image) data.image = `http://localhost:3000/assets/${req.files.image[0].filename}`
-            if (req.files.cover) data.cover = `http://localhost:3000/assets/${req.files.cover[0].filename}`
+            if (req.files.image) data.image = `http://localhost:4000/assets/${req.files.image[0].filename}`
+            if (req.files.cover) data.cover = `http://localhost:4000/assets/${req.files.cover[0].filename}`
             const profile = await profileService.updatePut(data)
             succesResponse(res, "data updated", 200, profile)
         } catch (err: unknown) {
