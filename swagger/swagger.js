@@ -56,10 +56,11 @@ const doc = {
       },
     },
     host: "localhost:3000/api/v1",
-    securitySchemes: {
+    securitySchemas: {
       bearerAuth: {
         type: "http",
         scheme: "bearer",
+        bearerFormat: "JWT",
       },
     },
   },

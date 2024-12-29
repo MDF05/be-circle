@@ -6,71 +6,63 @@ import dotenv from "dotenv";
 import UserTypesExtends from "../types/user-ext-fullname";
 dotenv.config();
 
-
-
-
 const prisma = new PrismaClient();
 
 class AuthService {
-    async register(data: UserTypesExtends): Promise<UserTypes> {
-        const { fullName, ...other } = data;
-        const salt = 10;
-        const hashPassword = await bcrypt.hash(other.password, salt);
+  async register(data: UserTypesExtends): Promise<UserTypes> {
+    const { fullName, ...other } = data;
+    const salt = 10;
+    const hashPassword = await bcrypt.hash(other.password, salt);
 
-        const UniqueEmail = await prisma.user.findUnique({ where: { email: other.email } });
-        if (UniqueEmail) throw new Error("email has already been registered");
+    const UniqueEmail = await prisma.user.findUnique({ where: { email: other.email } });
+    if (UniqueEmail) throw new Error("email has already been registered");
 
-        const user = await prisma.user.create({
-            data: {
-                ...other,
-                password: hashPassword,
+    const user = await prisma.user.create({
+      data: {
+        ...other,
+        password: hashPassword,
+      },
+    });
+
+    const profile = await prisma.profile.create({ data: { userId: user.id, username: fullName, fullName: fullName } });
+    return user;
+  }
+
+  async login(data: loginDTO): Promise<UserToken> {
+    const { email, password } = data;
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        profile: {
+          include: {
+            _count: {
+              select: {
+                follower: true,
+                following: true,
+              },
             },
-        });
+          },
+        },
+      },
+    });
 
-        const profile = await prisma.profile.create({ data: { userId: user.id, username: fullName, fullName: fullName } })
-        return user
-    }
+    if (!user) throw new Error(`User not found`);
 
-    async login(data: loginDTO): Promise<UserToken> {
-        const { email, password } = data;
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) throw new Error(`Invalid credentials`);
 
-        const user = await prisma.user.findUnique({
-            where: { email }, include: {
-                profile: {
-                    include: {
-                        _count: {
-                            select: {
-                                follower: true,
-                                following: true,
-                            }
-                        }
-                    }
-                }
-            }
-        });
+    const { password: Password, ...otherUser } = user;
 
+    const token = jwebtoken.sign(otherUser, process.env.JWTPASSWORD as string, { expiresIn: "1d" });
 
-        if (!user) throw new Error(`User not found`);
+    return { user: otherUser, token };
+  }
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) throw new Error(`Invalid credentials`);
-
-        const { password: Password, ...otherUser } = user;
-
-        const token = jwebtoken.sign(otherUser, process.env.JWTPASSWORD as string, { expiresIn: "1d" });
-
-        return { user: otherUser, token };
-    }
-
-
-    async validateToken(token: string): Promise<UserTypes> {
-        const decoded = jwebtoken.verify(token, process.env.JWTPASSWORD as string);
-        return decoded as UserTypes
-    }
-
-
-
-
+  async validateToken(token: string): Promise<UserTypes> {
+    const decoded = jwebtoken.verify(token, process.env.JWTPASSWORD as string);
+    return decoded as UserTypes;
+  }
 }
 
 export default new AuthService();
