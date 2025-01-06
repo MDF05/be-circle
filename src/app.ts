@@ -12,7 +12,7 @@ const port = process.env.PORT || 8000;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://fe-circle-git-main-mdf05s-projects.vercel.app"],
+    origin: ["http://localhost:5173", "https://fe-circle-two.vercel.app"],
   }),
 );
 app.use(express.json());
