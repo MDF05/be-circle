@@ -11,8 +11,6 @@ class ThreadController {
       const body = { ...req.body, profileId: req?.user?.profile.id };
       if (req.file) body.image = await cloudinary.uploader(req.file);
 
-      console.log(body);
-
       const post = await postService.create(body);
       succesResponse(res, "post created successfully", 201, post);
     } catch (err: unknown) {
@@ -25,6 +23,17 @@ class ThreadController {
     try {
       const { id } = req.params;
       const post = await postService.findUnique(id);
+
+      succesResponse(res, "data received", 200, post);
+    } catch (err: unknown) {
+      if (err instanceof Error) next(createError(err.message, 401));
+      else next(createError("unknown error", 520));
+    }
+  }
+  async findByProfileid(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { profileid } = req.params;
+      const post = await postService.findThreadByProfileId(profileid);
 
       succesResponse(res, "data received", 200, post);
     } catch (err: unknown) {
