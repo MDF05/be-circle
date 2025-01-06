@@ -18,14 +18,23 @@ CREATE TABLE "user" (
 -- CreateTable
 CREATE TABLE "profile" (
     "id" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
-    "bio" TEXT,
-    "cover" TEXT,
-    "image" TEXT DEFAULT 'http://localhost:3000/assets/avatar.png',
+    "username" TEXT NOT NULL,
+    "bio" TEXT DEFAULT 'silahkan tambahkan bio profile',
+    "cover" TEXT DEFAULT 'https://be-circle-one.vercel.app/assets/cover.png',
+    "image" TEXT DEFAULT 'https://be-circle-one.vercel.app/assets/avatar.png',
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "follow" (
+    "id" TEXT NOT NULL,
+    "followerId" TEXT NOT NULL,
+    "followingId" TEXT NOT NULL,
+
+    CONSTRAINT "follow_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -56,11 +65,23 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "profile_userId_key" ON "profile"("userId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "follow_followerId_followingId_key" ON "follow"("followerId", "followingId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Like_userId_threadId_key" ON "Like"("userId", "threadId");
+
 -- AddForeignKey
 ALTER TABLE "user" ADD CONSTRAINT "user_threadId_fkey" FOREIGN KEY ("threadId") REFERENCES "thread"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "follow" ADD CONSTRAINT "follow_followerId_fkey" FOREIGN KEY ("followerId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "follow" ADD CONSTRAINT "follow_followingId_fkey" FOREIGN KEY ("followingId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "thread" ADD CONSTRAINT "thread_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
