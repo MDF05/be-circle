@@ -49,8 +49,11 @@ class AuthController {
         */
 
     try {
-      const { password, ...user } = await AuthService.validateToken(req.params.token);
-      succesResponse(res, "token is validated", 201, user);
+      const user = await AuthService.validateToken(req.params.token);
+      if (!user) throw new Error("Invalid token");
+      const { password, ...details } = user;
+
+      succesResponse(res, "token is validated", 201, details);
     } catch (err: unknown) {
       if (err instanceof Error) next(createError(err.message, 401));
       else next(createError("unknown error", 520));

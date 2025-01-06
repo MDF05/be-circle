@@ -59,9 +59,24 @@ class AuthService {
     return { user: otherUser, token };
   }
 
-  async validateToken(token: string): Promise<UserTypes> {
+  async validateToken(token: string): Promise<UserTypes | null> {
     const decoded = jwebtoken.verify(token, process.env.JWTPASSWORD as string);
-    return decoded as UserTypes;
+    const user = await prisma.user.findUnique({
+      where: { email: (decoded as UserTypes).email },
+      include: {
+        profile: {
+          include: {
+            _count: {
+              select: {
+                follower: true,
+                following: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return user;
   }
 }
 
