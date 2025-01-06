@@ -39,8 +39,7 @@ model Profile {
   fullName  String
   username  String
   bio       String?  @default("silahkan tambahkan bio profile")
-  cover     String?  @default("http://localhost:3000/assets/cover.png")
-  image     String?  @default("http://localhost:3000/assets/avatar.png")
+  cover     String?
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   thread    Thread[]
