@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -40,6 +39,7 @@ model Profile {
   username  String
   bio       String?  @default("silahkan tambahkan bio profile")
   cover     String?
+  image     String?
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   thread    Thread[]

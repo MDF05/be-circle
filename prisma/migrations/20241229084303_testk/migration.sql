@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "profile" ALTER COLUMN "cover" DROP DEFAULT,
-ALTER COLUMN "image" DROP DEFAULT;

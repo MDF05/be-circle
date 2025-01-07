@@ -21,8 +21,8 @@ CREATE TABLE "profile" (
     "fullName" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "bio" TEXT DEFAULT 'silahkan tambahkan bio profile',
-    "cover" TEXT DEFAULT 'https://be-circle-one.vercel.app/assets/cover.png',
-    "image" TEXT DEFAULT 'https://be-circle-one.vercel.app/assets/avatar.png',
+    "cover" TEXT,
+    "image" TEXT,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
