@@ -9,6 +9,6 @@ ThreadRouter.delete("/:id", threadController.delete);
 ThreadRouter.delete("/many", threadController.deleteMany);
 ThreadRouter.put("/:id", threadController.update);
 ThreadRouter.get("/:id", threadController.get);
-ThreadRouter.get("/user/:id", threadController.findByProfileid);
+ThreadRouter.get("/profile/:profileId", threadController.findByProfileId);
 
 export default ThreadRouter;

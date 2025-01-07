@@ -30,10 +30,10 @@ class ThreadController {
       else next(createError("unknown error", 520));
     }
   }
-  async findByProfileid(req: Request, res: Response, next: NextFunction) {
+  async findByProfileId(req: Request, res: Response, next: NextFunction) {
     try {
-      const { profileid } = req.params;
-      const post = await postService.findThreadByProfileId(profileid);
+      const { profileId } = req.params;
+      const post = await postService.findThreadByProfileId(profileId);
 
       succesResponse(res, "data received", 200, post);
     } catch (err: unknown) {
