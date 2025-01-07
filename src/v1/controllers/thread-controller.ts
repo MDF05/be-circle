@@ -8,14 +8,13 @@ import cloudinary from "../libs/cloudinary";
 class ThreadController {
   async post(req: RequestExtUser, res: Response, next: NextFunction) {
     try {
-      console.log(req.file);
       const body = { ...req.body, profileId: req?.user?.profile.id };
       if (req?.file) body.image = await cloudinary.uploader(req.file);
-      console.log(body);
 
       const post = await postService.create(body);
       succesResponse(res, "post created successfully", 201, post);
     } catch (err: unknown) {
+      console.log(err);
       if (err instanceof Error) next(createError(err.message, 401));
       else next(createError("unknown error", 520));
     }
