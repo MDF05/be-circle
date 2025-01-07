@@ -44,6 +44,7 @@ class ThreadController {
 
   async getMany(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("asu");
       const posts = await postService.findMany();
       succesResponse(res, "data received", 200, posts);
     } catch (err: unknown) {
