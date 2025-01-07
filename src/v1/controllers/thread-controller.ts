@@ -15,6 +15,7 @@ class ThreadController {
       const post = await postService.create(body);
       succesResponse(res, "post created successfully", 201, post);
     } catch (err: unknown) {
+      console.log(err);
       if (err instanceof Error) next(createError(err.message, 401));
       else next(createError("unknown error", 520));
     }
