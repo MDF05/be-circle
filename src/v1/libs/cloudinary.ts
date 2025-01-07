@@ -13,15 +13,12 @@ class Cloudinary {
 
   async uploader(images: Express.Multer.File): Promise<string | null> {
     try {
-      console.log("cloudinary");
-      console.log(images);
       const b64 = Buffer.from(images.buffer).toString("base64");
       const dataURI = `data:${images.mimetype};base64,${b64}`;
       const result = await cloudinary.uploader.upload(dataURI, { folder: "b56-circle" });
 
       return result.url;
     } catch (err) {
-      console.log(err);
       return null;
     }
   }
