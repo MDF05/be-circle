@@ -47,7 +47,6 @@ class ThreadController {
       const posts = await postService.findMany();
       succesResponse(res, "data received", 200, posts);
     } catch (err: unknown) {
-      console.log(err);
       if (err instanceof Error) next(createError(err.message, 401));
       else next(createError("unknown error", 520));
     }

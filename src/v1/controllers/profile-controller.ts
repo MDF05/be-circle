@@ -95,6 +95,7 @@ class ProfillerController {
       const data = { ...req.body, id };
       if (req.files.image) data.image = await cloudinary.uploader(req.files.image[0]);
       if (req.files.cover) data.cover = await cloudinary.uploader(req.files.cover[0]);
+
       const profile = await profileService.updatePut(data);
       succesResponse(res, "data updated", 200, profile);
     } catch (err: unknown) {
