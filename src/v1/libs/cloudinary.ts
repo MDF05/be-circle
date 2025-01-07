@@ -29,7 +29,7 @@ class Cloudinary {
         images.map(async (file) => {
           const b64 = Buffer.from(file.buffer).toString("base64");
           const dataURI = `data:${file.mimetype};base64,${b64}`;
-          const result = await cloudinary.uploader.upload(dataURI, { folder: "review-film" });
+          const result = await cloudinary.uploader.upload(dataURI, { folder: "b56-circle" });
           imageUrl.push(result.secure_url);
         }),
       );
