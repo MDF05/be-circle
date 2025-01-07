@@ -11,6 +11,7 @@ class ThreadController {
       console.log(req.file);
       const body = { ...req.body, profileId: req?.user?.profile.id };
       if (req?.file) body.image = await cloudinary.uploader(req.file);
+      console.log(body);
 
       const post = await postService.create(body);
       succesResponse(res, "post created successfully", 201, post);
