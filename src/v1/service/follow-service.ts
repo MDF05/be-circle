@@ -26,9 +26,13 @@ class FollowService {
         const followers = await prisma.follow.findMany({ where: { followingId: profileId }, include: { follower: true } })
         return followers
     }
-
+    
     async findProfileFollower(profileId: string) {
-        const followers = await prisma.follow.findMany({ where: { followerId: profileId }, include: { following: true } })
+        const followers = await prisma.follow.findMany({ 
+            where: { followerId: profileId }, 
+            include: { following: true }
+
+        })
         return followers
     }
 

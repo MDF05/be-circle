@@ -1,5 +1,12 @@
+import  dotenv  from 'dotenv';
 import express, { NextFunction, Request, Response, Express } from "express";
 import createError from "./v1/utils/create-error";
+
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+dotenv.config({ path: envFile });
 
 import RouterV1 from "./version/v1";
 // import RouterV2 from "./version/v2";
@@ -8,7 +15,7 @@ import errorResponse from "./v1/utils/error-response";
 import cors from "cors";
 
 const app: Express = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 
 app.use(
   cors({

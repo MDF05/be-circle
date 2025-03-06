@@ -10,6 +10,7 @@ class FollowController {
       const followingId = req.user?.profile.id as string;
       const followerId = req.params.followerId;
 
+
       const follow = await followService.create(followerId, followingId);
       succesResponse(res, "follow has been created", 200, follow);
     } catch (err) {
