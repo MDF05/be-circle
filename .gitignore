@@ -3,6 +3,7 @@ node_modules
 # Keep environment variables out of version control
 .env
 .env.production
+.env.development
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
