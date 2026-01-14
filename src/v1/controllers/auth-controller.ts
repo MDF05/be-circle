@@ -5,8 +5,6 @@ import succesResponse from "../utils/succes-response";
 import dotenv from "dotenv";
 import { registerSchema } from "../schema/register-schema";
 import { loginSchema } from "../schema/login-schema";
-import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
 
 dotenv.config();
 
@@ -86,30 +84,27 @@ class AuthController {
 
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const mailTransporter = nodemailer.createTransport({
-        service: "gmail",
-        // host: 'smtp.gmail.com',
-        // port: 587,
-        // secure: false,
-        auth: {
-          user: "mdavafahreza05@gmail.com",
-          pass: "ga dapat anjing bajing google",
-        },
-      });
+      const { email } = req.body;
+      if (!email) throw new Error("Email is required");
 
-      const mailOptions: Mail.Options = {
-        from: "noreply",
-        to: "dava.kspp02@gmail.com",
-        subject: "code your tiket password",
-        text: `code: text`,
-      };
-
-      mailTransporter.sendMail(mailOptions, (err, info) => {
-        if (err) throw new Error(err.message);
-        else return res.json({ success: "yes" });
-      });
+      await AuthService.forgotPassword(email);
+      // Always return success even if email doesn't exist to prevent enumeration
+      succesResponse(res, "If the email is registered, a reset link has been sent.", 200, {});
     } catch (err: unknown) {
       if (err instanceof Error) next(createError(err.message, 401));
+      else next(createError("unknown error", 520));
+    }
+  }
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) throw new Error("Token and new password are required");
+
+      await AuthService.resetPassword(token, newPassword);
+      succesResponse(res, "Password has been reset successfully", 200, {});
+    } catch (err: unknown) {
+      if (err instanceof Error) next(createError(err.message, 400));
       else next(createError("unknown error", 520));
     }
   }

@@ -3,14 +3,17 @@ import bcrypt from "bcrypt";
 import { loginDTO, UserLogin, UserToken } from "../DTO/login-dto";
 import jwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
+import { v4 as uuidv4 } from 'uuid';
+import redisClient from "../../config/redis";
+import { sendEmail } from "../utils/mailer";
 import UserTypesExtends from "../types/user-ext-fullname";
 dotenv.config();
 
 const prisma = new PrismaClient();
 
 class AuthService {
-  async register(data: UserTypesExtends): Promise<UserTypes> {
-    const { fullName, ...other } = data;
+  async register(data: UserTypesExtends & { captchaToken?: string }): Promise<UserTypes> {
+    const { fullName, captchaToken, ...other } = data;
     const salt = 10;
     const hashPassword = await bcrypt.hash(other.password, salt);
 
@@ -77,6 +80,46 @@ class AuthService {
       },
     });
     return user;
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      // For security, don't reveal if user doesn't exist, but maybe log it
+      return;
+    }
+
+    const token = uuidv4();
+    // Save token to Redis with 15 minutes expiration (900 seconds)
+    // Key: forgot-password:{token} -> Value: email
+    await redisClient.set(`forgot-password:${token}`, email, "EX", 900);
+
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${token}`;
+
+    await sendEmail(
+      email,
+      "Reset Your Password",
+      `Click here to reset your password: ${token}`,
+      `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`
+    );
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const email = await redisClient.get(`forgot-password:${token}`);
+    if (!email) {
+      throw new Error("Invalid or expired token");
+    }
+
+    const salt = 10;
+    const hashPassword = await bcrypt.hash(newPassword, salt);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashPassword },
+    });
+
+    // Delete token after use
+    await redisClient.del(`forgot-password:${token}`);
   }
 }
 
